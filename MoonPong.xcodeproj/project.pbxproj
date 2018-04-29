@@ -7,15 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F307FC522096407300A20873 /* FireGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307FC512096407300A20873 /* FireGestureRecognizer.swift */; };
+		F307FC542096472000A20873 /* moon_surface.png in Resources */ = {isa = PBXBuildFile; fileRef = F307FC532096472000A20873 /* moon_surface.png */; };
 		F33EF0842091ACBC007D28D6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33EF0832091ACBC007D28D6 /* AppDelegate.swift */; };
 		F33EF0862091ACBC007D28D6 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = F33EF0852091ACBC007D28D6 /* art.scnassets */; };
 		F33EF0882091ACBC007D28D6 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33EF0872091ACBC007D28D6 /* GameViewController.swift */; };
 		F33EF08B2091ACBC007D28D6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F33EF0892091ACBC007D28D6 /* Main.storyboard */; };
 		F33EF08D2091ACC1007D28D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F33EF08C2091ACC1007D28D6 /* Assets.xcassets */; };
 		F33EF0902091ACC1007D28D6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F33EF08E2091ACC1007D28D6 /* LaunchScreen.storyboard */; };
+		F33EF0982091AED0007D28D6 /* skybox.png in Resources */ = {isa = PBXBuildFile; fileRef = F33EF0972091AED0007D28D6 /* skybox.png */; };
+		F33EF09B2091AFDF007D28D6 /* tile070.png in Resources */ = {isa = PBXBuildFile; fileRef = F33EF09A2091AFDF007D28D6 /* tile070.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F307FC512096407300A20873 /* FireGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireGestureRecognizer.swift; sourceTree = "<group>"; };
+		F307FC532096472000A20873 /* moon_surface.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moon_surface.png; sourceTree = "<group>"; };
 		F33EF0802091ACBC007D28D6 /* MoonPong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoonPong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F33EF0832091ACBC007D28D6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F33EF0852091ACBC007D28D6 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -24,6 +30,8 @@
 		F33EF08C2091ACC1007D28D6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F33EF08F2091ACC1007D28D6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F33EF0912091ACC1007D28D6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F33EF0972091AED0007D28D6 /* skybox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = skybox.png; sourceTree = "<group>"; };
+		F33EF09A2091AFDF007D28D6 /* tile070.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tile070.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,10 +64,14 @@
 		F33EF0822091ACBC007D28D6 /* MoonPong */ = {
 			isa = PBXGroup;
 			children = (
+				F307FC512096407300A20873 /* FireGestureRecognizer.swift */,
+				F307FC532096472000A20873 /* moon_surface.png */,
 				F33EF0832091ACBC007D28D6 /* AppDelegate.swift */,
 				F33EF0852091ACBC007D28D6 /* art.scnassets */,
 				F33EF0872091ACBC007D28D6 /* GameViewController.swift */,
+				F33EF0972091AED0007D28D6 /* skybox.png */,
 				F33EF0892091ACBC007D28D6 /* Main.storyboard */,
+				F33EF09A2091AFDF007D28D6 /* tile070.png */,
 				F33EF08C2091ACC1007D28D6 /* Assets.xcassets */,
 				F33EF08E2091ACC1007D28D6 /* LaunchScreen.storyboard */,
 				F33EF0912091ACC1007D28D6 /* Info.plist */,
@@ -125,10 +137,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F33EF0982091AED0007D28D6 /* skybox.png in Resources */,
 				F33EF0862091ACBC007D28D6 /* art.scnassets in Resources */,
 				F33EF0902091ACC1007D28D6 /* LaunchScreen.storyboard in Resources */,
+				F307FC542096472000A20873 /* moon_surface.png in Resources */,
 				F33EF08D2091ACC1007D28D6 /* Assets.xcassets in Resources */,
 				F33EF08B2091ACBC007D28D6 /* Main.storyboard in Resources */,
+				F33EF09B2091AFDF007D28D6 /* tile070.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +154,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F307FC522096407300A20873 /* FireGestureRecognizer.swift in Sources */,
 				F33EF0882091ACBC007D28D6 /* GameViewController.swift in Sources */,
 				F33EF0842091ACBC007D28D6 /* AppDelegate.swift in Sources */,
 			);
