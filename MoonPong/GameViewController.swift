@@ -20,38 +20,6 @@ struct CollisionCategory {
     static let Ball: Int = 0b00001000
 }
 
-class SquaringUp: GKState {
-    
-    override func isValidNextState(_ stateClass: AnyClass) -> Bool {
-        return stateClass is IncomingBall.Type
-    }
-    
-    override func didEnter(from previousState: GKState?) {
-        print("Opponent is squaring up.")
-    }
-}
-
-class IncomingBall: GKState {
-    override func isValidNextState(_ stateClass: AnyClass) -> Bool {
-        return stateClass is Striking.Type
-    }
-    
-    override func didEnter(from previousState: GKState?) {
-        print("Opponent moves to incoming ball.")
-    }
-    
-}
-
-class Striking: GKState {
-    override func isValidNextState(_ stateClass: AnyClass) -> Bool {
-        return stateClass is SquaringUp.Type
-    }
-    
-    override func didEnter(from previousState: GKState?) {
-        print("Opponents strikes the ball.")
-    }
-}
-
 class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNSceneRendererDelegate, SCNPhysicsContactDelegate {
     
     //MARK: config
@@ -60,9 +28,9 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNScen
     
     let autofireTapTimeThreshold = 0.2
     let maxRoundsPerSecond = 30
-    let bulletRadius = 100.00
+    let ballRadius = 100.00
     let ballImpulse = 2
-    let maxBullets = 100
+    let maxBalls = 100
     let gravity = CGFloat(60000)
     
     @IBOutlet var sceneView: SCNView!
@@ -70,8 +38,10 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNScen
     var walkGesture: UIPanGestureRecognizer!
     var zoomGesture: UIPinchGestureRecognizer!
     var fireGesture: FireGestureRecognizer!
-    var player: SCNNode!
-    var paddle: SCNNode!
+    var player1: SCNNode!
+    var player2: SCNNode!
+    var paddle1: SCNNode!
+    var paddle2: SCNNode!
     var camNode: SCNNode!
     var cameraPosition: SCNNode!
     var elevation: Float = 0
@@ -154,42 +124,72 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNScen
         lookAtWorldConstraint.isGimbalLockEnabled = true
         
         //player
-        player = SCNNode()
-        player.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: SCNBox(width: 1.0, height: 1.0,  length: 1.0, chamferRadius: 0.0), options: nil))
-        player.physicsBody?.angularDamping = 0.6
-        player.physicsBody?.damping = 0.6
-        player.physicsBody?.rollingFriction = 0.2
-        player.physicsBody?.friction = 0.2
-        player.physicsBody?.velocityFactor = SCNVector3(x: 1, y: 1, z: 1)
-        player.physicsBody?.categoryBitMask = CollisionCategory.Player
-        player.physicsBody?.collisionBitMask = CollisionCategory.All ^ CollisionCategory.Ball
-        player.physicsField?.categoryBitMask = CollisionCategory.Player
-        player.position = SCNVector3(x: 64, y: 128, z: 0)
-        player.constraints = [lookAtWorldConstraint]
+        player1 = SCNNode()
+        player1.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: SCNBox(width: 1.0, height: 1.0,  length: 1.0, chamferRadius: 0.0), options: nil))
+        player1.physicsBody?.angularDamping = 0.6
+        player1.physicsBody?.damping = 0.6
+        player1.physicsBody?.rollingFriction = 0.2
+        player1.physicsBody?.friction = 0.2
+        player1.physicsBody?.velocityFactor = SCNVector3(x: 1, y: 1, z: 1)
+        player1.physicsBody?.categoryBitMask = CollisionCategory.Player
+        player1.physicsBody?.collisionBitMask = CollisionCategory.All ^ CollisionCategory.Ball
+        player1.physicsField?.categoryBitMask = CollisionCategory.Player
+        player1.position = SCNVector3(x: 64, y: 128, z: 0)
+        player1.constraints = [lookAtWorldConstraint]
         
-        //paddle
-        paddle = SCNNode()
-        paddle.geometry = SCNBox(width: 8, height: 8, length: 1, chamferRadius: 16.0)
-        paddle.geometry?.firstMaterial?.diffuse.contents = UIColor.red
-        paddle.name = "paddle"
-        paddle.physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.kinematic, shape: SCNPhysicsShape(geometry: paddle.geometry!, options: nil))
-        paddle.opacity = 0.3
-        paddle.physicsBody?.mass = 100
-        paddle.physicsBody?.categoryBitMask = CollisionCategory.Map
-        paddle.physicsBody?.collisionBitMask = CollisionCategory.Ball
-        paddle.physicsBody?.contactTestBitMask = CollisionCategory.Ball
-        paddle.rotation = SCNVector4(x: Float(Double.pi/32), y: 0, z: 0, w: 0.28)
-        paddle.position = SCNVector3(x: 0, y: -8, z: 0)
-        paddle.constraints = nil
+        player2 = SCNNode()
+        player2.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: SCNBox(width: 1.0, height: 1.0,  length: 1.0, chamferRadius: 0.0), options: nil))
+        player2.physicsBody?.angularDamping = 0.6
+        player2.physicsBody?.damping = 0.6
+        player2.physicsBody?.rollingFriction = 0.2
+        player2.physicsBody?.friction = 0.2
+        player2.physicsBody?.velocityFactor = SCNVector3(x: 1, y: 1, z: 1)
+        player2.physicsBody?.categoryBitMask = CollisionCategory.Player
+        player2.physicsBody?.collisionBitMask = CollisionCategory.All ^ CollisionCategory.Ball
+        player2.physicsField?.categoryBitMask = CollisionCategory.Player
+        player2.position = SCNVector3(x: -64, y: 128, z: 0)
+        player2.constraints = [lookAtWorldConstraint]
+        
+        //paddle 1
+        paddle1 = SCNNode()
+        paddle1.geometry = SCNBox(width: 8, height: 8, length: 1, chamferRadius: 16.0)
+        paddle1.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        paddle1.name = "paddle1"
+        paddle1.physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.kinematic, shape: SCNPhysicsShape(geometry: paddle1.geometry!, options: nil))
+        paddle1.opacity = 0.3
+        paddle1.physicsBody?.mass = 100
+        paddle1.physicsBody?.categoryBitMask = CollisionCategory.Map
+        paddle1.physicsBody?.collisionBitMask = CollisionCategory.Ball
+        paddle1.physicsBody?.contactTestBitMask = CollisionCategory.Ball
+        paddle1.rotation = SCNVector4(x: Float(Double.pi/32), y: 0, z: 0, w: 0.28)
+        paddle1.position = SCNVector3(x: 0, y: -8, z: 0)
+        paddle1.constraints = nil
 
+        //paddle 2
+        paddle2 = SCNNode()
+        paddle2.geometry = SCNBox(width: 8, height: 8, length: 1, chamferRadius: 16.0)
+        paddle2.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        paddle2.name = "paddle2"
+        paddle2.physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.kinematic, shape: SCNPhysicsShape(geometry: paddle2.geometry!, options: nil))
+        paddle2.opacity = 1.0
+        paddle2.physicsBody?.mass = 100
+        paddle2.physicsBody?.categoryBitMask = CollisionCategory.Map
+        paddle2.physicsBody?.collisionBitMask = CollisionCategory.Ball
+        paddle2.physicsBody?.contactTestBitMask = CollisionCategory.Ball
+        paddle2.rotation = SCNVector4(x: Float(Double.pi/32), y: 0, z: 0, w: 0.28)
+        paddle2.position = SCNVector3(x: 0, y: -8, z: 0)
+        paddle2.constraints = nil
         
-        scene.rootNode.addChildNode(player)
-        player.addChildNode(paddle)
+        scene.rootNode.addChildNode(player1)
+        player1.addChildNode(paddle1)
+        
+        scene.rootNode.addChildNode(player2)
+        player2.addChildNode(paddle2)
         
         //add a camera node
         camNode = SCNNode()
         camNode.position = SCNVector3(x: 0, y: 0, z: 16)
-        player.addChildNode(camNode)
+        player1.addChildNode(camNode)
 
         
         //add camera
@@ -197,7 +197,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNScen
         camera.zNear = 0.01
         camera.zFar = Double(max(1000, 1000))
         camNode.camera = camera
-        let lookAtPlayerConstraint = SCNLookAtConstraint(target: player)
+        let lookAtPlayerConstraint = SCNLookAtConstraint(target: player1)
         lookAtPlayerConstraint.isGimbalLockEnabled = true
         camNode.constraints = [lookAtPlayerConstraint]
         
@@ -257,28 +257,28 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNScen
         
         //get translation and convert to rotation
         let translation = gesture.translation(in: self.view)
-        paddle.position.x = paddle.presentation.position.x + Float(translation.x / 2)
-        paddle.position.y = paddle.presentation.position.y + Float(translation.y * -1 / 2)
-        if paddle.position.x > 0 {
-            paddle.position.z = paddle.presentation.position.z - Float((translation.x)) / 2
+        paddle1.position.x = paddle1.presentation.position.x + Float(translation.x / 2)
+        paddle1.position.y = paddle1.presentation.position.y + Float(translation.y * -1 / 2)
+        if paddle1.position.x > 0 {
+            paddle1.position.z = paddle1.presentation.position.z - Float((translation.x)) / 2
         } else {
-            paddle.position.z = paddle.presentation.position.z + Float((translation.x)) / 2
+            paddle1.position.z = paddle1.presentation.position.z + Float((translation.x)) / 2
         }
         
-        paddle.rotation.w = paddle.presentation.rotation.w + Float(translation.y / 128)
+        paddle1.rotation.w = paddle1.presentation.rotation.w + Float(translation.y / 128)
         
         
         gesture.setTranslation(.zero, in: self.view)
         if gesture.state == UIGestureRecognizerState.ended || gesture.state == UIGestureRecognizerState.cancelled {
-            paddle.position = SCNVector3(0, -8, 0)
-            paddle.rotation.w = 0.28
+            paddle1.position = SCNVector3(0, -8, 0)
+            paddle1.rotation.w = 0.28
         }
         
     }
     
     @objc func zoomGestureRecognized(gesture: UIPinchGestureRecognizer) {
         
-        let frontDirection = player.presentation.convertVector(SCNNode.localFront , to: nil)
+        let frontDirection = player1.presentation.convertVector(SCNNode.localFront , to: nil)
         let scale = gesture.scale
         let velocity = gesture.velocity
         var impulse = SCNVector3(x: 0, y: 0, z: max(-1, min(1, Float(scale * velocity * 6))))
@@ -287,7 +287,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNScen
             y: frontDirection.y * Float(impulse.z) * 10,
             z: frontDirection.z * Float(impulse.z) * 10
         )
-        player.physicsBody?.applyForce(impulse, asImpulse: true)
+        player1.physicsBody?.applyForce(impulse, asImpulse: true)
         if gesture.state == UIGestureRecognizerState.ended || gesture.state == UIGestureRecognizerState.cancelled {
         }
     }
@@ -295,8 +295,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNScen
     @objc func walkGestureRecognized(gesture: UIPanGestureRecognizer) {
         //get walk gesture translation
         let translation = walkGesture.translation(in: self.view)
-        let strafeDirection = player.presentation.convertVector(SCNNode.localRight, to: nil)
-        let upDirection = player.presentation.convertVector(SCNNode.localUp, to: nil)
+        let strafeDirection = player1.presentation.convertVector(SCNNode.localRight, to: nil)
+        let upDirection = player1.presentation.convertVector(SCNNode.localUp, to: nil)
         var impulse = SCNVector3(x: max(-1, min(1, Float(translation.x) / 25)), y: 0, z: max(-1, min(1, Float(-translation.y) / 25)))
         impulse = SCNVector3(
             x: upDirection.x * Float(impulse.z) * 5 + strafeDirection.x * Float(impulse.x) * 5,
@@ -304,7 +304,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNScen
             z: upDirection.z * Float(impulse.z) * 5 + strafeDirection.z * Float(impulse.x) * 5
         )
         
-        player.physicsBody?.applyForce(impulse, asImpulse: true)
+        player1.physicsBody?.applyForce(impulse, asImpulse: true)
         
         if gesture.state == UIGestureRecognizerState.ended || gesture.state == UIGestureRecognizerState.cancelled {
             gesture.setTranslation(.zero, in: self.view)
@@ -323,18 +323,11 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNScen
         lastTappedFire = now
     }
     
-    func didBegin(_ contact: SCNPhysicsContact) {
-        if contact.nodeA.name == "ball" {
-            print("foo")
-        } else {
-            print("bar")
-        }
-    }
     func renderer(_ aRenderer: SCNSceneRenderer, didApplyAnimationsAtTime time: TimeInterval) {
-        let frontDirection = player.presentation.convertVector(SCNNode.localFront, to: nil)
+        let frontDirection = player1.presentation.convertVector(SCNNode.localFront, to: nil)
         
-        player.position = player.presentation.position
-        player.rotation = player.presentation.rotation
+        player1.position = player1.presentation.position
+        player1.rotation = player1.presentation.rotation
         
         
         //handle firing
@@ -345,7 +338,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNScen
                 
                 //create or recycle ball node
                 let ball: SCNNode = {
-                    if self.balls.count < self.maxBullets {
+                    if self.balls.count < self.maxBalls {
                         return SCNNode()
                     } else {
                         return self.balls.remove(at: 0)
@@ -354,7 +347,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNScen
                 ball.name = "ball"
                 balls.append(ball)
                 ball.geometry = SCNSphere(radius: 2.0)
-                ball.position = SCNVector3(x: player.presentation.position.x, y: player.presentation.position.y, z: player.presentation.position.z)
+                ball.position = SCNVector3(x: player1.presentation.position.x, y: player1.presentation.position.y, z: player1.presentation.position.z)
                 ball.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: ball.geometry!, options: nil))
                 ball.geometry?.firstMaterial?.locksAmbientWithDiffuse = true
                 ball.geometry?.firstMaterial?.diffuse.contents = UIColor.orange
@@ -379,15 +372,13 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate, SCNScen
     }
     
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
-        if contact.nodeB.name == "ball" {
-            print("nodeB is ball")
-        } else {
-            print("NodeB is not ball")
+        if contact.nodeB.name == "ball" && contact.nodeA.name == "paddle1" {
+            print("Player 1 hits the ball.")
+            stateMachine.enter(IncomingBall.self)
         }
-        if contact.nodeA.name == "world" {
-            print("NodeA is world")
-        } else {
-            print("NodeA is not world")
+        if contact.nodeB.name == "ball" && contact.nodeA.name == "world" {
+            print("Ball hits the world.")
+            stateMachine.enter(Striking.self)
         }
     }
 }
